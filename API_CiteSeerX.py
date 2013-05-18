@@ -18,7 +18,7 @@ Funkcia, ktora splna zakladne vyhladavanie pomocou sluzby CiteSeerX
 '''
 def basicSearch(keyword,Include):
 	result_dic=dict()
-	dict_index=0
+	dic_index=0
 	author_parse=""
 	title_parse=""
 	date_parse=""
@@ -29,129 +29,152 @@ def basicSearch(keyword,Include):
 	language_parse=""
 	keywords_parse=""
 	isbn_parse=""
-	insert_key=0
+	base_url=""
 	html_file=""
 	pager=""
 	authors=""
-	html_file = sendUrlCiteSeerX_BASIC(keyword,Include,0)
+	page=""
+	page= sendUrlCiteSeerX_BASIC(keyword,Include,0)
+	zoznam=[]
+	html_file=urllib2.urlopen(page)
 	#time.sleep(15)
 	soup=""
 	soup=BeautifulSoup(html_file)
-	pager=soup.find('div',attrs={'id' : 'pager'})
-	if (len(pager) <2):
-		sys.stdout.write("Neobsahuje odkazy na dalie stranky\n")
+	
+	
+
+	while (True):
+		pom_list=[]
+		author_list=[]
+		pom_string=""
+		authors= soup.findAll('span', attrs={'class' : 'authors'})
+		for i in range(0,len(authors)):
+			pom_list.append(authors[i].contents)
+		
+			for p in range(0,len(pom_list[i])):
+				pom_string=pom_string + pom_list[i][p]
+		
+			pom_string=pom_string.replace("\n","")
+		
+			pom_string=pom_string.replace("\t","")
+			
+			zoznam.append(pom_string)
+			pom_string=""
+		result_dic[dic_index].append(zoznam)
+	
+		pom_list=[]
+		author_list=[]
+		pom_string=""
+		authors= soup.findAll('span', attrs={'class' : 'pubvenue'})
+		for i in range(0,len(authors)):
+			pom_list.append(authors[i].contents)
+		
+			for p in range(0,len(pom_list[i])):
+				pom_string=pom_string + pom_list[i][p]
+		
+			pom_string=pom_string.replace("\n","")
+		
+			pom_string=pom_string.replace("\t","")
+			zoznam.append(pom_string)
+			pom_string=""
+		result_dic[dic_index].append(zoznam)
+		
+		pom_list=[]
+		author_list=[]
+		pom_string=""
+		authors= soup.findAll('span', attrs={'class' : 'pubyear'})
+		for i in range(0,len(authors)):
+			pom_list.append(authors[i].contents)
+		
+			for p in range(0,len(pom_list[i])):
+				pom_string=pom_string + pom_list[i][p]
+		
+			pom_string=pom_string.replace("\n","")
+		
+			pom_string=pom_string.replace("\t","")
+			zoznam.append(pom_string)
+			pom_string=""
+		result_dic[dic_index].append(zoznam)
+			
+	
+		pom_list=[]
+		author_list=[]
+		pom_string=""
+		authors= soup.findAll('span', attrs={'class' : 'snippet'})
+		for i in range(0,len(authors)):
+			pom_list.append(authors[i].contents)
+		
+			for p in range(0,len(pom_list[i])):
+				pom_string=pom_string + pom_list[i][p]
+		
+			pom_string=pom_string.replace("\n","")
+		
+			pom_string=pom_string.replace("\t","")
+			zoznam.append(pom_string)
+			pom_string=""
+		result_dic[dic_index].append(zoznam)
+	
+		pom_list=[]
+		author_list=[]
+		pom_string=""
+		
+		zoznam=[]
+		authors= soup.findAll('span', attrs={'class' : 'citations'})
+		for i in range(0,len(authors)):
+			pom_list.append(authors[i].contents)
+		
+			for p in range(0,len(pom_list[i])):
+				pom_string=pom_string + pom_list[i][p]
+		
+			pom_string=pom_string.replace("\n","")
+		
+			pom_string=pom_string.replace("\t","")
+			zoznam.append(pom_string)
+			pom_string=""
+		result_dic[dic_index].append(zoznam)
+		
+		
+		pom_list=[]
+		author_list=[]
+		pom_string=""
+		authors= soup.findAll('span', attrs={'class' : 'pubabstract'})
+		for i in range(0,len(authors)):
+			pom_list.append(authors[i].contents)
+		
+			for p in range(0,len(pom_list[i])):
+				pom_string=pom_string + pom_list[i][p]
+		
+			pom_string=pom_string.replace("\n","")
+		
+			pom_string=pom_string.replace("\t","")
+			zoznam.append(pom_string)
+			pom_string=""
+		result_dic[dic_index].append(zoznam)
+		
+	
+		pager=soup.find('div',attrs={'id' : 'pager'})
+		if (len(pager) <2):
+			break
+		else:
+			insert_key=insert_key+1
+			next_url= soup.find('div', attrs={'id' : 'pager'})
+			pom_list=[]
+			author_list=[]
+			spom_string=""
+			
+			base_url="http://citeseerx.ist.psu.edu"
+			html_file=urllib2.urlopen(base_url)
+	
+	
+			pom_string= next_url.contents[1].get('href')
+	
+			base_url=base_url+pom_string
+	
+			html_file=urllib2.urlopen(base_url)
+			soup=BeautifulSoup(html_file)
+	print result_dic
+	#koniec whilte
 	#print soup
-	pom_list=[]
-	author_list=[]
-	pom_string=""
-	authors= soup.findAll('span', attrs={'class' : 'authors'})
-	for i in range(0,len(authors)):
-		pom_list.append(authors[i].contents)
-		
-		for p in range(0,len(pom_list[i])):
-			pom_string=pom_string + pom_list[i][p]
-		
-		pom_string=pom_string.replace("\n","")
-		
-		pom_string=pom_string.replace("\t","")
-		author_list.append(pom_string)
-		pom_string=""
-	
-	pom_list=[]
-	author_list=[]
-	pom_string=""
-	authors= soup.findAll('span', attrs={'class' : 'pubvenue'})
-	for i in range(0,len(authors)):
-		pom_list.append(authors[i].contents)
-		
-		for p in range(0,len(pom_list[i])):
-			pom_string=pom_string + pom_list[i][p]
-		
-		pom_string=pom_string.replace("\n","")
-		
-		pom_string=pom_string.replace("\t","")
-		author_list.append(pom_string)
-		pom_string=""
-		
-	pom_list=[]
-	author_list=[]
-	pom_string=""
-	authors= soup.findAll('span', attrs={'class' : 'pubyear'})
-	for i in range(0,len(authors)):
-		pom_list.append(authors[i].contents)
-		
-		for p in range(0,len(pom_list[i])):
-			pom_string=pom_string + pom_list[i][p]
-		
-		pom_string=pom_string.replace("\n","")
-		
-		pom_string=pom_string.replace("\t","")
-		author_list.append(pom_string)
-		pom_string=""
-	
-	pom_list=[]
-	author_list=[]
-	pom_string=""
-	authors= soup.findAll('span', attrs={'class' : 'snippet'})
-	for i in range(0,len(authors)):
-		pom_list.append(authors[i].contents)
-		
-		for p in range(0,len(pom_list[i])):
-			pom_string=pom_string + pom_list[i][p]
-		
-		pom_string=pom_string.replace("\n","")
-		
-		pom_string=pom_string.replace("\t","")
-		author_list.append(pom_string)
-		pom_string=""
-	
-	pom_list=[]
-	author_list=[]
-	pom_string=""
-	authors= soup.findAll('span', attrs={'class' : 'citations'})
-	for i in range(0,len(authors)):
-		pom_list.append(authors[i].contents)
-		
-		for p in range(0,len(pom_list[i])):
-			pom_string=pom_string + pom_list[i][p]
-		
-		pom_string=pom_string.replace("\n","")
-		
-		pom_string=pom_string.replace("\t","")
-		author_list.append(pom_string)
-		pom_string=""
-	
-	pom_list=[]
-	author_list=[]
-	pom_string=""
-	authors= soup.findAll('span', attrs={'class' : 'pubabstract'})
-	for i in range(0,len(authors)):
-		pom_list.append(authors[i].contents)
-		
-		for p in range(0,len(pom_list[i])):
-			pom_string=pom_string + pom_list[i][p]
-		
-		pom_string=pom_string.replace("\n","")
-		
-		pom_string=pom_string.replace("\t","")
-		author_list.append(pom_string)
-		pom_string=""
-		
-	
-	
-		
-
-	
-	
-	
-
-	
-
-	
-
-
-
-
 	
 	return result_dic
 	
@@ -205,8 +228,8 @@ def sendUrlCiteSeerX_EXTENDED(keywordsPhrase,Citation,Sort,title_arg,autoraffi,p
 		http_req= "http://citeseerx.ist.psu.edu/search?q="+keywordsPhrase+"&submit=Search"+sort_list_no_cit[Sort]
 	else:
 		http_req= "http://citeseerx.ist.psu.edu/search?q="+keywordsPhrase+"&submit=Search"+sort_list_cit[Sort]	
-	page=urllib2.urlopen(http_req)
-	return page
+	
+	return http_req
 
 '''
 Funkcia pre poslanie ziadosti o URL
@@ -223,8 +246,8 @@ def sendUrlCiteSeerX_BASIC(keywordsPhrase,Citation,Sort):
 		http_req= "http://citeseerx.ist.psu.edu/search?q="+keywordsPhrase+"&submit=Search"+sort_list_cit[Sort]	
 	req=""
 	the_page=""
-	page=urllib2.urlopen(http_req)
-	return page
+	
+	return http_req
 
 vysledok=dict()
 vysledok = basicSearch("windows",False)
