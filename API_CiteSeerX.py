@@ -9,6 +9,7 @@ Modul obsahuje 2 vyhladavacie funkcie: basicSearch a extendedSearch
 from bs4 import BeautifulSoup
 import sys
 import urllib2
+import re
 
 import time
 '''
@@ -16,7 +17,7 @@ Funkcia, ktora splna zakladne vyhladavanie pomocou sluzby CiteSeerX
 @param:keyword - vyhladavacia fraz(retazec),Include - Bool. hodnota
 @return: asociativne_pole
 '''
-def basicSearch(keyword,Include):
+def basicSearch(keyword,Include,Sort):
 	result_dic=dict()
 	dic_index=0
 	author_parse=""
@@ -34,7 +35,11 @@ def basicSearch(keyword,Include):
 	pager=""
 	authors=""
 	page=""
-	page= sendUrlCiteSeerX_BASIC(keyword,Include,0)
+	keyword=keyword.strip()
+	keyword = re.sub(' +',' ',keyword)
+	keyword=keyword.replace(" ","+")
+
+	page= sendUrlCiteSeerX_BASIC(keyword,Include,Sort)
 	zoznam=[]
 	html_file=urllib2.urlopen(page)
 	#time.sleep(15)
@@ -250,7 +255,7 @@ def sendUrlCiteSeerX_BASIC(keywordsPhrase,Citation,Sort):
 	return http_req
 
 vysledok=dict()
-vysledok = basicSearch("windows",False)
+vysledok = basicSearch("windows    nieco",False,0)
 
 		
 
