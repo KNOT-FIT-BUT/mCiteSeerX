@@ -9,7 +9,7 @@ Modul obsahuje 2 vyhladavacie funkcie: basicSearch a extendedSearch
 from bs4 import BeautifulSoup
 import sys
 import urllib2
-
+import re
 '''
 Funkcia, ktora splna zakladne vyhladavanie pomocou sluzby CiteSeerX
 @param:keyword - vyhladavacia fraz(retazec),Include - Bool. hodnota
@@ -17,6 +17,7 @@ Funkcia, ktora splna zakladne vyhladavanie pomocou sluzby CiteSeerX
 '''
 def basicSearch(keyword,Include):
 	result_dic=dict()
+	dict_index=0
 	author_parse=""
 	title_parse=""
 	date_parse=""
@@ -29,149 +30,23 @@ def basicSearch(keyword,Include):
 	isbn_parse=""
 	insert_key=0
 	html_file=""
-	html_file = sendUrlCiteSeerX_BASIC(keyword,Include)
-	soup = BeautifulSoup(html_file.read())
+	html_file = sendUrlCiteSeerX_BASIC(keyword,Include,0)
+	
+	soup=""
+	soup=BeautifulSoup(html_file)
+	print soup
+	authors=""
+	authors= soup.find('span', attrs={'class' : 'authors'})
+	print authors
 	
 
 	
 
-
-
-
-# Copy all of the content from the provided web page
-webpage = urlopen('http://feeds.huffingtonpost.com/huffingtonpost/LatestNews').read()
- 
-# Grab everything that lies between the title tags using a REGEX
-patFinderTitle = re.compile('')
- 
-# Grab the link to the original article using a REGEX
-patFinderLink = re.compile('<link rel.*href="(.*)">')
- 
-# Store all of the titles and links found in 2 lists
-findPatTitle = re.findall(patFinderTitle,webpage)
-findPatLink = re.findall(patFinderLink,webpage)
- 
-# Create an iterator that will cycle through the first 16 articles and skip a few
-listIterator = []
-listIterator[:] = range(2,16)
- 
-soup2 = BeautifulSoup(webpage)
-#print soup2.findAll("title")
-titleSoup = soup2.findAll("title")
-linkSoup = soup2.findAll("link")
-for i in listIterator:
-    print titleSoup[i]
-    print linkSoup[i]
-    print "\n"
-    # Copy all of the content from the provided web page
-webpage = urlopen('http://feeds.huffingtonpost.com/huffingtonpost/LatestNews').read()
- 
-# Grab everything that lies between the title tags using a REGEX
-patFinderTitle = re.compile('')
- 
-# Grab the link to the original article using a REGEX
-patFinderLink = re.compile('<link rel.*href="(.*)">')
- 
-# Store all of the titles and links found in 2 lists
-findPatTitle = re.findall(patFinderTitle,webpage)
-findPatLink = re.findall(patFinderLink,webpage)
- 
-# Create an iterator that will cycle through the first 16 articles and skip a few
-listIterator = []
-listIterator[:] = range(2,16)
- 
-soup2 = BeautifulSoup(webpage)
-#print soup2.findAll("title")
-titleSoup = soup2.findAll("title")
-linkSoup = soup2.findAll("link")
-for i in listIterator:
-    print titleSoup[i]
-    print linkSoup[i]
-    print "\n"
-    # Copy all of the content from the provided web page
-webpage = urlopen('http://feeds.huffingtonpost.com/huffingtonpost/LatestNews').read()
- 
-# Grab everything that lies between the title tags using a REGEX
-patFinderTitle = re.compile('')
- 
-# Grab the link to the original article using a REGEX
-patFinderLink = re.compile('<link rel.*href="(.*)">')
- 
-# Store all of the titles and links found in 2 lists
-findPatTitle = re.findall(patFinderTitle,webpage)
-findPatLink = re.findall(patFinderLink,webpage)
- 
-# Create an iterator that will cycle through the first 16 articles and skip a few
-listIterator = []
-listIterator[:] = range(2,16)
- 
-soup2 = BeautifulSoup(webpage)
-#print soup2.findAll("title")
-titleSoup = soup2.findAll("title")
-linkSoup = soup2.findAll("link")
-for i in listIterator:
-    print titleSoup[i]
-    print linkSoup[i]
-    print "\n"
-    # Copy all of the content from the provided web page
-webpage = urlopen('http://feeds.huffingtonpost.com/huffingtonpost/LatestNews').read()
- 
-# Grab everything that lies between the title tags using a REGEX
-patFinderTitle = re.compile('')
- 
-# Grab the link to the original article using a REGEX
-patFinderLink = re.compile('<link rel.*href="(.*)">')
- 
-# Store all of the titles and links found in 2 lists
-findPatTitle = re.findall(patFinderTitle,webpage)
-findPatLink = re.findall(patFinderLink,webpage)
- 
-# Create an iterator that will cycle through the first 16 articles and skip a few
-listIterator = []
-listIterator[:] = range(2,16)
- 
-soup2 = BeautifulSoup(webpage)
-#print soup2.findAll("title")
-titleSoup = soup2.findAll("title")
-linkSoup = soup2.findAll("link")
-for i in listIterator:
-    print titleSoup[i]
-    print linkSoup[i]
-    print "\n"
-    # Copy all of the content from the provided web page
-webpage = urlopen('http://feeds.huffingtonpost.com/huffingtonpost/LatestNews').read()
- 
-# Grab everything that lies between the title tags using a REGEX
-patFinderTitle = re.compile('')
- 
-# Grab the link to the original article using a REGEX
-patFinderLink = re.compile('<link rel.*href="(.*)">')
- 
-# Store all of the titles and links found in 2 lists
-findPatTitle = re.findall(patFinderTitle,webpage)
-findPatLink = re.findall(patFinderLink,webpage)
- 
-# Create an iterator that will cycle through the first 16 articles and skip a few
-listIterator = []
-listIterator[:] = range(2,16)
- 
-soup2 = BeautifulSoup(webpage)
-#print soup2.findAll("title")
-titleSoup = soup2.findAll("title")
-linkSoup = soup2.findAll("link")
-for i in listIterator:
-    print titleSoup[i]
-    print linkSoup[i]
-    print "\n"
-
-
-
-authordiv = soup.find('meta',attrs={'name':'citation_title'})
+	
 
 
 
 
-authordiv = soup.find('meta',attrs={'name':'citation_title'})
 	
 	return result_dic
 	
@@ -211,10 +86,22 @@ YearArg,MinCitations,Citations,SortBy):
 		mincitations_arg=1
 	elif (SortBy !=0):
 		sortby_arg=1
+	html_file=""
+	html_file = sendUrlCiteSeerX_EXTENDED(keyword,Include,0,title_arg,autoraffi_arg,publicvenue,keywords_arg,abstract_arg,year_arg,mincitations_arg)
+	soup = BeautifulSoup(html_file.read())
 	
-def sendUrlCiteSeerX_EXTENDED(keywordsPhrase,Citation,Sort):
+	
+	
+def sendUrlCiteSeerX_EXTENDED(keywordsPhrase,Citation,Sort,title_arg,autoraffi,publicvenue,keywords,abstract,year_arg,min_cit):
 	http_req=""
-
+	sort_list_no_cit=['&t=doc','&t=doc&sort=cite','&t=doc&sort=dates','&t=doc&sort=ascdate','&t=doc&sort=recent']
+	sort_list_cit=['&ic=1&sort=rlv&t=doc','&ic=1&sort=cite&t=doc','&ic=1&t=doc&sort=date','&t=doc&sort=ascdate','&ic=1&t=doc&sort=recent']
+	if (Citation == 0):
+		http_req= "http://citeseerx.ist.psu.edu/search?q="+keywordsPhrase+"&submit=Search"+sort_list_no_cit[Sort]
+	else:
+		http_req= "http://citeseerx.ist.psu.edu/search?q="+keywordsPhrase+"&submit=Search"+sort_list_cit[Sort]	
+	page=urllib2.urlopen(http_req)
+	return page
 
 '''
 Funkcia pre poslanie ziadosti o URL
@@ -231,13 +118,11 @@ def sendUrlCiteSeerX_BASIC(keywordsPhrase,Citation,Sort):
 		http_req= "http://citeseerx.ist.psu.edu/search?q="+keywordsPhrase+"&submit=Search"+sort_list_cit[Sort]	
 	req=""
 	the_page=""
-		page=urllib2.urlopen(http_request)
-
-	
-	
-	
+	page=urllib2.urlopen(http_req)
 	return page
 
+vysledok=dict()
+vysledok = basicSearch("windows",False)
 
 		
 
