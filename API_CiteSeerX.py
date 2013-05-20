@@ -503,8 +503,8 @@ def sendUrlCiteSeerX_BASIC(keywordsPhrase,Citation,Sort):
 	
 	return http_req
 
-vysledok=dict()
-vysledok = basicSearch("windows    nieco",False,0)
+#vysledok=dict()
+#vysledok = basicSearch("windows    nieco",False,0)
 
 		
 
