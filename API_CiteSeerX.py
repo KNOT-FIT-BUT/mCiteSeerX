@@ -93,9 +93,9 @@ def basicSearch(keyword,Include,Sort):
 				
 				pom_list.append(name_of_pub.contents)
 			
-				for p in range(0,len(pom_list[i])):
+				for p in range(0,len(pom_list)):
 					
-					pom_string=pom_string + unicode(pom_list[i][p])
+					pom_string=pom_string + unicode(pom_list[p])
 				pom_string=pom_string.replace("<em>","")
 				pom_string=pom_string.replace("</em>","")
 				pom_string=pom_string.replace("\n","")
@@ -113,12 +113,12 @@ def basicSearch(keyword,Include,Sort):
 				list_authors.append("0")
 			else:
 				
-				
+				pom_list=[]
 				pom_list.append(authors.contents)
 			
-				for p in range(0,len(pom_list[i])):
+				for p in range(0,len(pom_list)):
 					
-					pom_string=pom_string + unicode(pom_list[i][p])
+					pom_string=pom_string + unicode(pom_list[p])
 				pom_string=pom_string.replace("<em>","")
 				pom_string=pom_string.replace("</em>","")
 				pom_string=pom_string.replace("\n","")
@@ -135,11 +135,12 @@ def basicSearch(keyword,Include,Sort):
 			if (not pubvenue):
 				list_authors.append("0")
 			else:
+				pom_list=[]
 				pom_list.append(pubvenue.contents)
 				
-				for p in range(0,len(pom_list[i])):
+				for p in range(0,len(pom_list)):
 					
-					pom_string=pom_string + unicode(pom_list[i][p])
+					pom_string=pom_string + unicode(pom_list[p])
 	
 				pom_string=pom_string.replace("\n","")
 				pom_string=pom_string.strip()
@@ -159,10 +160,11 @@ def basicSearch(keyword,Include,Sort):
 			if (not pubyear):
 				list_authors.append("0")
 			else:
+				pom_list=[]
 				pom_list.append(pubyear.contents)
 				
-				for p in range(0,len(pom_list[i])):
-					pom_string=pom_string + unicode(pom_list[i][p])
+				for p in range(0,len(pom_list)):
+					pom_string=pom_string + unicode(pom_list[p])
 				pom_string=pom_string.strip()
 				
 				pom_string=pom_string.replace("<em>","")
@@ -184,12 +186,12 @@ def basicSearch(keyword,Include,Sort):
 			if (not snippet):
 				list_authors.append("0")
 			else:
-				
+				pom_list=[]
 				pom_list.append(snippet.contents)
 				#print pom_list
 				
-				for p in range(0,len(pom_list[i])):
-					pom_string=pom_string + unicode(pom_list[i][p])
+				for p in range(0,len(pom_list)):
+					pom_string=pom_string + unicode(pom_list[p])
 			#odstranenie nepotrebnych znacike
 				pom_string=pom_string.replace("\n","")
 				pom_string=pom_string.strip()
@@ -212,8 +214,8 @@ def basicSearch(keyword,Include,Sort):
 				pom_list=[]
 				pom_list.append(pubyear.contents)
 				
-				for p in range(0,len(pom_list[i])):
-					pom_string=pom_string + unicode(pom_list[i][p])
+				for p in range(0,len(pom_list)):
+					pom_string=pom_string + unicode(pom_list[p])
 				pom_string=pom_string.strip()
 				pom_string=pom_string.replace("\n","")
 				pom_string=pom_string.replace("...","")
@@ -232,8 +234,8 @@ def basicSearch(keyword,Include,Sort):
 				pom_list=[]
 				pom_list.append(pubyear.contents)
 				
-				for p in range(0,len(pom_list[i])):
-					pom_string=pom_string + unicode(pom_list[i][p])
+				for p in range(0,len(pom_list)):
+					pom_string=pom_string + unicode(pom_list[p])
 				pom_string=pom_string.strip()
 				pom_string=pom_string.replace("\n","")
 				pom_string=pom_string.replace("...","")
@@ -248,11 +250,11 @@ def basicSearch(keyword,Include,Sort):
 				if (not citations):
 					list_authors.append("0")
 				else:
-					
+					pom_list=[]
 					pom_list.append(citations.contents)
 				
-					for p in range(0,len(pom_list[i])):
-						pom_string=pom_string + unicode(pom_list[i][p])
+					for p in range(0,len(pom_list)):
+						pom_string=pom_string + unicode(pom_list[p])
 					pom_string=pom_string.strip()
 					pom_string=pom_string.replace("Cited by","")
 					pom_string=pom_string.replace("(","")
