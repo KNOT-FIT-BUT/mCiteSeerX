@@ -19,6 +19,8 @@ Funkcia, ktora splna zakladne vyhladavanie pomocou sluzby CiteSeerX
 '''
 def basicSearch(keyword,Include,Sort):
 	result_dic=dict()
+	
+	
 	dic_index=0
 	author_parse=""
 	title_parse=""
@@ -38,10 +40,13 @@ def basicSearch(keyword,Include,Sort):
 	keyword=keyword.strip()
 	keyword = re.sub(' +',' ',keyword)
 	keyword=keyword.replace(" ","+")
-
+	pocet=0
 	page= sendUrlCiteSeerX_BASIC(keyword,Include,Sort)
 	zoznam=[]
-	html_file=urllib2.urlopen(page)
+	try:
+		html_file=urllib2.urlopen(page)
+	except Exception:
+		raise RuntimeError("Connection error")
 	#time.sleep(15)
 	soup=""
 	soup=BeautifulSoup(html_file)
@@ -49,63 +54,47 @@ def basicSearch(keyword,Include,Sort):
 	
 
 	while (True):
+		
+		list_authors=[]
 		pom_list=[]
-		author_list=[]
 		pom_string=""
+		pocet=0
 		authors= soup.findAll('span', attrs={'class' : 'authors'})
+		for o in range(0,len(authors)):
+			pocet=pocet+1
+		
+		if (not authors):
+			for i in range(0,pocet):
+				list_authors[i].append("0")
+		
+		
 		for i in range(0,len(authors)):
 			pom_list.append(authors[i].contents)
-		
+			
 			for p in range(0,len(pom_list[i])):
 				pom_string=pom_string + pom_list[i][p]
 		
 			pom_string=pom_string.replace("\n","")
-		
-			pom_string=pom_string.replace("\t","")
 			
-			zoznam.append(pom_string)
-			pom_string=""
-		result_dic[dic_index].append(zoznam)
+			pom_string=pom_string.replace("\t","")
 	
-		pom_list=[]
-		author_list=[]
+			
+			list_authors.append(pom_string)
+			
+			pom_string=""
+		
+		dic_index=0
+		
+		
+		
 		pom_string=""
+		pubvenue_list=[]
 		authors= soup.findAll('span', attrs={'class' : 'pubvenue'})
-		for i in range(0,len(authors)):
-			pom_list.append(authors[i].contents)
 		
-			for p in range(0,len(pom_list[i])):
-				pom_string=pom_string + pom_list[i][p]
-		
-			pom_string=pom_string.replace("\n","")
-		
-			pom_string=pom_string.replace("\t","")
-			zoznam.append(pom_string)
-			pom_string=""
-		result_dic[dic_index].append(zoznam)
-		
-		pom_list=[]
-		author_list=[]
-		pom_string=""
-		authors= soup.findAll('span', attrs={'class' : 'pubyear'})
-		for i in range(0,len(authors)):
-			pom_list.append(authors[i].contents)
-		
-			for p in range(0,len(pom_list[i])):
-				pom_string=pom_string + pom_list[i][p]
-		
-			pom_string=pom_string.replace("\n","")
-		
-			pom_string=pom_string.replace("\t","")
-			zoznam.append(pom_string)
-			pom_string=""
-		result_dic[dic_index].append(zoznam)
+		if (not authors):
+			for i in range(0,pocet):
 			
-	
-		pom_list=[]
-		author_list=[]
-		pom_string=""
-		authors= soup.findAll('span', attrs={'class' : 'snippet'})
+				pubvenue_list.append("0")
 		for i in range(0,len(authors)):
 			pom_list.append(authors[i].contents)
 		
@@ -116,11 +105,65 @@ def basicSearch(keyword,Include,Sort):
 		
 			pom_string=pom_string.replace("\t","")
 			zoznam.append(pom_string)
+			print zoznam	
+			result_dic[dic_index].append(zoznam[p])
+		
 			pom_string=""
-		result_dic[dic_index].append(zoznam)
+		
 	
 		pom_list=[]
-		author_list=[]
+		
+		pom_string=""
+		
+		
+		pubyear_list=[]
+		authors= soup.findAll('span', attrs={'class' : 'pubyear'})
+		if (not authors):
+			for i in range(0,pocet):
+				pubyear_list.append("0")
+		for i in range(0,len(authors)):
+			pom_list.append(authors[i].contents)
+			
+			for p in range(0,len(pom_list[i])):
+				pom_string=pom_string + pom_list[i][p]
+		
+			pom_string=pom_string.replace("\n","")
+		
+			pom_string=pom_string.replace("\t","")
+			pubyear_list.append(pom_string)
+			pom_string=""
+		
+		
+		pom_list=[]
+		snippet_list=[]
+		pom_string=""
+		pom_string=unicode(pom_string)
+		authors= soup.findAll('div', attrs={'class' : 'snippet'})
+		
+		if (not authors):
+			for i in range(0,pocet):
+				snippet_list.append("0")
+		for i in range(0,len(authors)):
+			pom_list.append(authors[i].contents)
+			
+			for p in range(0,len(pom_list[i])):
+				
+				pom_string=pom_string + unicode(pom_list[i][p])
+		
+			pom_string=pom_string.replace("\n","")
+			
+			pom_string=pom_string.replace("\t","")
+			pom_string=pom_string.replace("<em>","")
+			pom_string=pom_string.replace("</em>","")
+			pom_string=pom_string.replace("\"","")
+			pom_string=pom_string.replace("...","")
+			snippet_list.append(pom_string)
+			pom_string=""
+		
+		print snippet_list[0]
+		sys.exit(0)
+		pom_list=[]
+		
 		pom_string=""
 		
 		zoznam=[]
@@ -174,8 +217,10 @@ def basicSearch(keyword,Include,Sort):
 			pom_string= next_url.contents[1].get('href')
 	
 			base_url=base_url+pom_string
-	
-			html_file=urllib2.urlopen(base_url)
+			try:
+				html_file=urllib2.urlopen(base_url)
+			except Exception:
+				raise RuntimeError("Connection error")
 			soup=BeautifulSoup(html_file)
 	print result_dic
 	#koniec whilte
@@ -262,6 +307,7 @@ YearArg,MinCitations,IncludeCitation,SortBy):
 		pom_list=[]
 		author_list=[]
 		pom_string=""
+		
 		authors= soup.findAll('span', attrs={'class' : 'authors'})
 		for i in range(0,len(authors)):
 			pom_list.append(authors[i].contents)
@@ -274,9 +320,12 @@ YearArg,MinCitations,IncludeCitation,SortBy):
 			pom_string=pom_string.replace("\t","")
 			
 			zoznam.append(pom_string)
+		
+		
 			pom_string=""
 		result_dic[dic_index].append(zoznam)
-	
+		
+		
 		pom_list=[]
 		author_list=[]
 		pom_string=""
@@ -394,82 +443,86 @@ YearArg,MinCitations,IncludeCitation,SortBy):
 	return result_dic
 	
 	
-	
+'''
+Funkcia, ktora formuje zakladny URL dokaz na zaklade udajov ktore dostane od uzivatela
+'''	
 def sendUrlCiteSeerX_EXTENDED(keywordsPhrase,Citation,Sort,title_arg,author_name,autoraffi,publicvenue,keywords,abstract,year_arg,min_cit):
 	
 	http_req="http://citeseerx.ist.psu.edu/search?q="
 	couter=0
-	if (keywordsPhrase != False):
-		http_req = http_req + "text%3A" + keywordsPhrase 
-		counter=counter+1
-	elif (title_arg != False):
-		if (counter !=0):
-			http_req = http_req + "+AND+" + "title%3A" + title_arg
+	try:
+		if (keywordsPhrase != False):
+			http_req = http_req + "text%3A" + keywordsPhrase 
 			counter=counter+1
-		else:
-			http_re = http_req + "title%3A" + title_arg
-			counter=counter+1
-	elif (author_name != False):
-		if (counter !=0):
-			http_req = http_req + "+AND+" + "author%3A" + author_name
-			counter=counter+1
-		else:
-			http_re = http_req + "author%3A" + author_name
-			counter=counter+1
-	elif (autoraffi != False):
-		if (counter !=0):
-			http_req = http_req + "+AND+" + "affil%3A" + autoraffi
-			counter=counter+1
-		else:
-			http_re = http_req + "affil%3A" + autoraffi
-			counter=counter+1
-	elif (publicvenue != False):
-		if (counter !=0):
-			http_req = http_req + "+AND+" + "venue%3A" + publicvenue
-			counter=counter+1
-		else:
-			http_re = http_req + "venue%3A" + publicvenue
-			counter=counter+1
-	elif (keywords != False):
-		if (counter !=0):
-			http_req = http_req + "+AND+" + "keyword%3A" + keywords
-			counter=counter+1
-		else:
-			http_re = http_req + "keyword%3A" + keywords
-			counter=counter+1
-	elif (abstract!= False):
-		if (counter !=0):
-			http_req = http_req + "+AND+" + "abstract%3A" + abstract
-			counter=counter+1
-		else:
-			http_re = http_req + "abstract%3A" + abstract
-			counter=counter+1
-			
-			
-	elif (yearArg != False):
-		if (counter !=0):
-			
-			if (yearArg[0] >=1900 and yearArg[1] == 0):
-				http_req = http_req + "+AND+" + "year%3A%5B" + yearArg[0] + "+TO+" + "2014"+ "%5D"
+		elif (title_arg != False):
+			if (counter !=0):
+				http_req = http_req + "+AND+" + "title%3A" + title_arg
 				counter=counter+1
 			else:
-				http_req = http_req + "+AND+" + "year%3A%5B" + yearArg[0] + "+TO+" + yearArg[1]+ "%5D"
+				http_re = http_req + "title%3A" + title_arg
 				counter=counter+1
-		else:
-			if (yearArg[0] >=1900 and yearArg[1] == 0):
-				http_req = http_req + "+AND+" + "year%3A%5B" + yearArg[0] + "+TO+" + "2014"+ "%5D"
+		elif (author_name != False):
+			if (counter !=0):
+				http_req = http_req + "+AND+" + "author%3A" + author_name
 				counter=counter+1
 			else:
-				http_req = http_req + "+AND+" + "year%3A%5B" + yearArg[0] + "+TO+" + yearArg[1]+ "%5D"
+				http_re = http_req + "author%3A" + author_name
 				counter=counter+1
-	elif (min_cit != False):
-		if (counter !=0):
-			http_req = http_req + "+AND+" + "ncites%3A%5B" + min_cit
-			counter=counter+1
-		else:
-			http_re = http_req + "ncites%3A%5B" + min_cit
-			counter=counter+1
+		elif (autoraffi != False):
+			if (counter !=0):
+				http_req = http_req + "+AND+" + "affil%3A" + autoraffi
+				counter=counter+1
+			else:
+				http_re = http_req + "affil%3A" + autoraffi
+				counter=counter+1
+		elif (publicvenue != False):
+			if (counter !=0):
+				http_req = http_req + "+AND+" + "venue%3A" + publicvenue
+				counter=counter+1
+			else:
+				http_re = http_req + "venue%3A" + publicvenue
+				counter=counter+1
+		elif (keywords != False):
+			if (counter !=0):
+				http_req = http_req + "+AND+" + "keyword%3A" + keywords
+				counter=counter+1
+			else:
+				http_re = http_req + "keyword%3A" + keywords
+				counter=counter+1
+		elif (abstract!= False):
+			if (counter !=0):
+				http_req = http_req + "+AND+" + "abstract%3A" + abstract
+				counter=counter+1
+			else:
+				http_re = http_req + "abstract%3A" + abstract
+				counter=counter+1
 			
+			
+		elif (yearArg != False):
+			if (counter !=0):
+			
+				if (yearArg[0] >=1900 and yearArg[1] == 0):
+					http_req = http_req + "+AND+" + "year%3A%5B" + yearArg[0] + "+TO+" + "2014"+ "%5D"
+					counter=counter+1
+				else:
+					http_req = http_req + "+AND+" + "year%3A%5B" + yearArg[0] + "+TO+" + yearArg[1]+ "%5D"
+					counter=counter+1
+			else:
+				if (yearArg[0] >=1900 and yearArg[1] == 0):
+					http_req = http_req + "+AND+" + "year%3A%5B" + yearArg[0] + "+TO+" + "2014"+ "%5D"
+					counter=counter+1
+				else:
+					http_req = http_req + "+AND+" + "year%3A%5B" + yearArg[0] + "+TO+" + yearArg[1]+ "%5D"
+					counter=counter+1
+		elif (min_cit != False):
+			if (counter !=0):
+				http_req = http_req + "+AND+" + "ncites%3A%5B" + min_cit
+				counter=counter+1
+			else:
+				http_re = http_req + "ncites%3A%5B" + min_cit
+				counter=counter+1
+	except Exception:
+		raise Exception("Bad value")
 			
 			
 			
@@ -485,6 +538,14 @@ def sendUrlCiteSeerX_EXTENDED(keywordsPhrase,Citation,Sort,title_arg,author_name
 		
 	
 	return http_req
+
+'''
+Funkcia, ktora mi vymaze prebytocne medzery
+'''
+def strip_one_space(s):
+    if s.endswith(" "): s = s[:-1]
+    if s.startswith(" "): s = s[1:]
+    return s
 
 '''
 Funkcia pre poslanie ziadosti o URL
@@ -503,8 +564,9 @@ def sendUrlCiteSeerX_BASIC(keywordsPhrase,Citation,Sort):
 	
 	return http_req
 
-#vysledok=dict()
-#vysledok = basicSearch("windows    nieco",False,0)
+vysledok=dict()
+vysledok = basicSearch("nieco",False,0)
+
 
 		
 
