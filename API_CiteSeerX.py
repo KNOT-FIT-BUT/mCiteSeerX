@@ -47,7 +47,7 @@ def basicSearch(keyword,Include,Sort):
 	try:
 		html_file=urllib2.urlopen(page)
 	except Exception:
-		raise RuntimeError("Connection error")
+		raise Exception("Connection error")
 	#time.sleep(15)
 	soup=""
 	soup=BeautifulSoup(html_file)
@@ -331,7 +331,7 @@ def basicSearch(keyword,Include,Sort):
 			try:
 				html_file=urllib2.urlopen(base_url)
 			except Exception:
-				raise RuntimeError("Connection error")
+				raise Exception("Connection error")
 			soup=BeautifulSoup(html_file)
 	
 	#koniec parsovania funkcii
@@ -405,7 +405,10 @@ YearArg,MinCitations,IncludeCitation,SortBy):
 
 	page= sendUrlCiteSeerX_BASIC(keyword,Include,Sort)
 	zoznam=[]
-	html_file=urllib2.urlopen(page)
+	try:
+		html_file=urllib2.urlopen(page)
+	except Exception:
+		raise Exception("Connection error")
 	#time.sleep(15)
 	soup=""
 	soup=BeautifulSoup(html_file)
@@ -598,6 +601,29 @@ YearArg,MinCitations,IncludeCitation,SortBy):
 				list_authors.append((unicode(pom_string)))
 				
 				pom_string=""
+				
+			#parsovanie odkazu do kniznice
+			link_lib=moje.find('a', attrs={'class' : 'doc_details'})
+			if (not link_lib):
+				list_authors.append("0")
+			else:
+				link_lib=str(link_lib.get('href'))
+				base_link="http://citeseerx.ist.psu.edu"
+				base_link=base_link+link_lib
+				list_authors.append((unicode(base_link)))
+			
+			
+			#parsovanie odkazu na citacie
+			link_cit=moje.find('a', attrs={'class' : 'citation'})
+			if (not link_cit):
+				list_authors.append("0")
+			else:
+				pom_link=""
+				link_cit=str(link_cit.get('href'))
+				pom_link="http://citeseerx.ist.psu.edu"
+				pom_link=pom_link+link_cit
+				list_authors.append(unicode(pom_link))	
+				
 			#parsovanie poctu citacii na dielos
 			if (Include == True):
 				citations= moje.find('a', attrs={'class' : 'citation'})
@@ -648,8 +674,10 @@ YearArg,MinCitations,IncludeCitation,SortBy):
 			spom_string=""
 			
 			base_url="http://citeseerx.ist.psu.edu"
-			html_file=urllib2.urlopen(base_url)
-	
+			try:
+				html_file=urllib2.urlopen(base_url)
+			except Exception:
+				raise Exception("Connection error")
 	
 			pom_string= next_url.contents[1].get('href')
 	
@@ -743,7 +771,7 @@ def sendUrlCiteSeerX_EXTENDED(keywordsPhrase,Citation,Sort,title_arg,author_name
 				http_re = http_req + "ncites%3A%5B" + min_cit
 				counter=counter+1
 	except Exception:
-		raise Exception("Bad value")
+		raise ValueError("Bad values")
 			
 			
 			
