@@ -1,10 +1,13 @@
 #!/usr/bin/python
 
-'''
+"""
 API Modul pre sluzbu CiteSeerX
 Implementuje zakladne vyhladavanie pomocou tejto sluzby
 Modul obsahuje 2 vyhladavacie funkcie: basicSearch a extendedSearch
-'''
+"""
+
+
+
 
 from bs4 import BeautifulSoup
 import sys
@@ -13,11 +16,21 @@ import re
 import codecs
 import time
 
-'''
-Funkcia, ktora splna zakladne vyhladavanie pomocou sluzby CiteSeerX
-@param:keyword - vyhladavacia fraz(retazec),Include - Bool. hodnota
-@return: asociativne_pole
-'''
+"""
+     @param keyword: Vyhladaci retazec pre sluzbu
+		CiteSeerX. Moze obsahovat viac klucovych
+		slov pre vyhladavanie
+     @param Include: Parameter, ktory indikuje zahrnanie
+		citacii do vysledku.
+     @type Include: True pokial chceme do vysledku
+		zahrnut citacie. False pokial do vysledku
+		nechcem zahrnut citacie.
+     @param Sort: parameter, ktory nadobuda hodnot 0-3
+		podla toho akym sposobom maju byt ztriedene 
+		vysledky vyhladavania
+     @return: Slovnik pricom kazda polozka odpoveda jednemu
+		vysledku vyhladavania so vsetkymi informaciami o nej
+"""
 def basicSearch(keyword,Include,Sort):
 	result_dic=dict()
 	
@@ -338,15 +351,33 @@ def basicSearch(keyword,Include,Sort):
 	return result_dic
 	
 
-'''
-Funkcia, ktora splna rozsirene vyhladavanie pomocou sluzby CiteSeerX
-@rparam:text - vyhladavaci retazec
-@param:Title - nazov titulu
-@param:AutorAffi - prislusnost autora
-@param:PublicVenue - zaner diela
-@oaram: Keywords - klucove slova 
-@return: asociativne_pole
-'''	
+
+"""
+    @param Text: Vyhladaci retazec pre sluzbu
+		CiteSeerX. Moze obsahovat viac klucovych
+		slov pre vyhladavanie
+    @param Title: Nazov titulu podla ktoreho 
+		sa ma vyhladavat
+    @param AutorAffi: Prislusnost autora podla, ktorej sa ma 
+		vyhladavat
+    @param PublicVenue:Zaner diela podla, ktoreho sa ma vyhladavat
+    @param Keywords: Klucove slova, ktore musia obsahovat najdene
+		vysledky vyhladavania
+    @param Abstract: Nazov abstraktu, ktory ma byt zahrnuty 
+		do vyhladavania
+    @param Year: Obsahuje hodnotu True/False podla toho, ci chceme
+		vyhladavat diela podla roku vydania
+    @param YearArg: Zoznam ,ktory obsahuje 2 polozky 1. Rok od, ktoreho
+		chceme vyhladavat 2.polozka Rok po, ktory chceme vyhladavat
+    @param MinCitatons: Minimalny pocet citacii, ktory ma vysledok
+		obsahovat
+    @param IncludeCitations: Parameter, ktory indikuje zahrnanie
+		citacii do vysledku.
+    @param SortBy: Sposob akym maju byt jednotlive vysledky triedene
+		hodnoty 0-3
+		@return: Slovnik pricom kazda polozka odpoveda jednemu
+		vysledku vyhladavania so vsetkymi informaciami o nej
+"""
 def extendedSearch(Text,Title,AutorAffi,PublicVenue,Keywords,Abstract,Year,
 YearArg,MinCitations,IncludeCitation,SortBy):
 	text_arg=0
@@ -692,10 +723,31 @@ YearArg,MinCitations,IncludeCitation,SortBy):
 	return result_dic
 	
 	
-'''
-Funkcia, ktora formuje zakladny URL dokaz na zaklade udajov ktore dostane od uzivatela
-'''	
-def sendUrlCiteSeerX_EXTENDED(keywordsPhrase,Citation,Sort,title_arg,author_name,autoraffi,publicvenue,keywords,abstract,year_arg,min_cit):
+"""
+    @param keywordsPhrase: Vyhladaci retazec pre sluzbu
+		CiteSeerX. Moze obsahovat viac klucovych
+		slov pre vyhladavanie
+	@param Citation: Zahrnutie citacii do vysledkov vyhladavania
+	@param Sort: Sposob akym maju byt jednotlive vysledky triedene
+		hodnoty 0-3
+    @param title_arg: Zahrnutie nazvu titulu do vyhladavania
+    @param author_name: Nazov autora
+    @param autoraffi: Prislusnost autora podla, ktorej sa ma 
+		vyhladavat
+    @param publicvenue:Zaner diela podla, ktoreho sa ma vyhladavat
+    @param keywords: Klucove slova, ktore musia obsahovat najdene
+		vysledky vyhladavania
+    @param abstract: Nazov abstraktu, ktory ma byt zahrnuty 
+		do vyhladavania
+    @param year_arg: Zoznam ,ktory obsahuje 2 polozky 1. Rok od, ktoreho
+		chceme vyhladavat 2.polozka Rok po, ktory chceme vyhladavat
+    @param MinCitatons: Minimalny pocet citacii, ktory ma vysledok
+		obsahovat
+    @param IncludeCitations: Parameter, ktory indikuje zahrnanie
+    @return: Slovnik pricom kazda polozka odpoveda jednemu
+		vysledku vyhladavania so vsetkymi informaciami o nej
+"""
+def __sendUrlCiteSeerX_EXTENDED(keywordsPhrase,Citation,Sort,title_arg,author_name,autoraffi,publicvenue,keywords,abstract,year_arg,min_cit):
 	
 	http_req="http://citeseerx.ist.psu.edu/search?q="
 	couter=0
@@ -788,19 +840,27 @@ def sendUrlCiteSeerX_EXTENDED(keywordsPhrase,Citation,Sort,title_arg,author_name
 	
 	return http_req
 
-'''
-Funkcia, ktora mi vymaze prebytocne medzery
-'''
-def strip_one_space(s):
+"""
+     @param s: Retazec v ktorom sa orezu medzery
+	 @return: Orezany vstupny retazec
+"""
+def __strip_one_space(s):
     if s.endswith(" "): s = s[:-1]
     if s.startswith(" "): s = s[1:]
     return s
 
-'''
-Funkcia pre poslanie ziadosti o URL
-Tato funkcia je pouzivana zakladnou funkciou pre vyhladavanie
-'''
-def sendUrlCiteSeerX_BASIC(keywordsPhrase,Citation,Sort):
+"""
+     @param keywordPhrase: Vyhladaci retazec pre sluzbu
+		CiteSeerX. Moze obsahovat viac klucovych
+		slov pre vyhladavanie
+     @param Citation: Zahrnuti citacii do vyhladavania
+     @param Sort: parameter, ktory nadobuda hodnot 0-3
+		podla toho akym sposobom maju byt ztriedene 
+		vysledky vyhladavania
+     @return: Slovnik pricom kazda polozka odpoveda jednemu
+		vysledku vyhladavania so vsetkymi informaciami o nej
+"""
+def __sendUrlCiteSeerX_BASIC(keywordsPhrase,Citation,Sort):
 	http_req=""
 	response=""
 	sort_list_no_cit=['&t=doc','&t=doc&sort=cite','&t=doc&sort=dates','&t=doc&sort=ascdate','&t=doc&sort=recent']

@@ -1,0 +1,7 @@
+API_CiteSeerX	API_CiteSeerX-module.html
+API_CiteSeerX.extendedSearch	API_CiteSeerX-module.html#extendedSearch
+API_CiteSeerX.basicSearch	API_CiteSeerX-module.html#basicSearch
+API_CiteSeerX.__sendUrlCiteSeerX_EXTENDED	API_CiteSeerX-module.html#__sendUrlCiteSeerX_EXTENDED
+API_CiteSeerX.vysledok	API_CiteSeerX-module.html#vysledok
+API_CiteSeerX.__sendUrlCiteSeerX_BASIC	API_CiteSeerX-module.html#__sendUrlCiteSeerX_BASIC
+API_CiteSeerX.__strip_one_space	API_CiteSeerX-module.html#__strip_one_space
