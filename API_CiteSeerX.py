@@ -54,8 +54,10 @@ def basicSearch(keyword,Include,Sort):
 	
 	
 	
-	number_of_cycles=0
 	
+	list_authors=[]
+	number_of_cycles=0
+	pom_link=""
 	
 	
 	
@@ -66,11 +68,14 @@ def basicSearch(keyword,Include,Sort):
 	citations=""
 	pubabstract=""
 	results=""
-	list_authors=[]
+	
 	pom_list=[]
 	pom_string=""
 	name_of_pub=""
 	pom_string=unicode(pom_string)
+	link_cit=""
+	link_lib=""
+	base_link=""
 	while (True):
 		list_authors=[]
 		results= soup.findAll('div', attrs={'class' : 'result'})
@@ -212,7 +217,7 @@ def basicSearch(keyword,Include,Sort):
 				list_authors.append("0")
 			else:
 				pom_list=[]
-				pom_list.append(pubyear.contents)
+				pom_list.append(citations.contents)
 				
 				for p in range(0,len(pom_list)):
 					pom_string=pom_string + unicode(pom_list[p])
@@ -232,7 +237,7 @@ def basicSearch(keyword,Include,Sort):
 				list_authors.append("0")
 			else:
 				pom_list=[]
-				pom_list.append(pubyear.contents)
+				pom_list.append(pubabstract.contents)
 				
 				for p in range(0,len(pom_list)):
 					pom_string=pom_string + unicode(pom_list[p])
@@ -244,6 +249,29 @@ def basicSearch(keyword,Include,Sort):
 				list_authors.append((unicode(pom_string)))
 				
 				pom_string=""
+				
+			#parsovanie odkazu do kniznice
+			link_lib=moje.find('a', attrs={'class' : 'doc_details'})
+			if (not link_lib):
+				list_authors.append("0")
+			else:
+				link_lib=str(link_lib.get('href'))
+				base_link="http://citeseerx.ist.psu.edu"
+				base_link=base_link+link_lib
+				list_authors.append((unicode(base_link)))
+			
+			
+			#parsovanie odkazu na citacie
+			link_cit=moje.find('a', attrs={'class' : 'citation'})
+			if (not link_cit):
+				list_authors.append("0")
+			else:
+				pom_link=""
+				link_cit=str(link_cit.get('href'))
+				pom_link="http://citeseerx.ist.psu.edu"
+				pom_link=pom_link+link_cit
+				list_authors.append(unicode(pom_link))
+			
 			#parsovanie poctu citacii na dielos
 			if (Include == True):
 				citations= moje.find('a', attrs={'class' : 'citation'})
@@ -538,7 +566,7 @@ YearArg,MinCitations,IncludeCitation,SortBy):
 				list_authors.append("0")
 			else:
 				pom_list=[]
-				pom_list.append(pubyear.contents)
+				pom_list.append(citations.contents)
 				
 				for p in range(0,len(pom_list[i])):
 					pom_string=pom_string + unicode(pom_list[i][p])
@@ -558,7 +586,7 @@ YearArg,MinCitations,IncludeCitation,SortBy):
 				list_authors.append("0")
 			else:
 				pom_list=[]
-				pom_list.append(pubyear.contents)
+				pom_list.append(pubabstract.contents)
 				
 				for p in range(0,len(pom_list[i])):
 					pom_string=pom_string + unicode(pom_list[i][p])
