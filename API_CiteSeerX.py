@@ -6,9 +6,6 @@ Implementuje zakladne vyhladavanie pomocou tejto sluzby
 Modul obsahuje 2 vyhladavacie funkcie: basicSearch a extendedSearch
 """
 
-
-
-
 from bs4 import BeautifulSoup
 import sys
 import urllib2
@@ -18,95 +15,79 @@ import time
 
 """
      @param keyword: Vyhladaci retazec pre sluzbu
-		CiteSeerX. Moze obsahovat viac klucovych
-		slov pre vyhladavanie
+        CiteSeerX. Moze obsahovat viac klucovych
+        slov pre vyhladavanie
      @param Include: Parameter, ktory indikuje zahrnanie
-		citacii do vysledku.
+        citacii do vysledku.
      @type Include: True pokial chceme do vysledku
-		zahrnut citacie. False pokial do vysledku
-		nechcem zahrnut citacie.
+        zahrnut citacie. False pokial do vysledku
+        nechcem zahrnut citacie.
      @param Sort: parameter, ktory nadobuda hodnot 0-3
-		podla toho akym sposobom maju byt ztriedene 
-		vysledky vyhladavania
+        podla toho akym sposobom maju byt ztriedene 
+        vysledky vyhladavania
      @return: Slovnik pricom kazda polozka odpoveda jednemu
-		vysledku vyhladavania so vsetkymi informaciami o nej
+        vysledku vyhladavania so vsetkymi informaciami o nej
 """
-def basicSearch(keyword,Include,Sort):
-	result_dic=dict()
-	
-	
-	dic_index=0
-	author_parse=""
-	title_parse=""
-	date_parse=""
-	vol_parse=""
-	issn_parse=""
-	abstract_url_parse=""
-	pdf_url_parse=""
-	language_parse=""
-	keywords_parse=""
-	isbn_parse=""
-	base_url=""
-	html_file=""
-	pager=""
-	authors=""
-	page=""
-	keyword=keyword.strip()
-	keyword = re.sub(' +',' ',keyword)
-	keyword=keyword.replace(" ","+")
-	pocet=0
-	page= sendUrlCiteSeerX_BASIC(keyword,Include,Sort)
-	zoznam=[]
-	try:
-		html_file=urllib2.urlopen(page)
-	except Exception:
-		raise Exception("Connection error")
-	#time.sleep(15)
-	soup=""
-	soup=BeautifulSoup(html_file)
-	
-	
-	
-	
-	list_authors=[]
-	number_of_cycles=0
-	pom_link=""
-	
-	
-	
-	
-	puvenue=""
-	pubyear=""
-	snippet=""
-	citations=""
-	pubabstract=""
-	results=""
-	
-	pom_list=[]
-	pom_string=""
-	name_of_pub=""
-	pom_string=unicode(pom_string)
-	link_cit=""
-	link_lib=""
-	base_link=""
-	while (True):
-		list_authors=[]
-		results= soup.findAll('div', attrs={'class' : 'result'})
-		
-		for i in range(0,len(results)):
-			number_of_cycles=number_of_cycles+1
-		
-		
-		for i in range(0,number_of_cycles):
-			moje=BeautifulSoup(str(results[i]))
-			
-			#parsovanie nazvu knihy
-			 #a class="remove doc_details"
-			name_of_pub= moje.find('a', attrs={'class' : 'doc_details'})
-			
-			if (not name_of_pub):
-				list_authors.append("0")
-			else:
+
+
+def basicSearch(keyword, Include, Sort):
+    result_dic = dict()
+    dic_index = 0
+    author_parse = ""
+    title_parse = ""
+    date_parse = ""
+    vol_parse = ""
+    issn_parse = ""
+    abstract_url_parse = ""
+    pdf_url_parse = ""
+    language_parse = ""
+    keywords_parse = ""
+    isbn_parse = ""
+    base_url = ""
+    html_file = ""
+    pager = ""
+    authors = ""
+    page = ""
+    keyword = keyword.strip()
+    keyword = re.sub(' +', ' ', keyword)
+    keyword = keyword.replace(" ", "+")
+    pocet = 0
+    page = sendUrlCiteSeerX_BASIC(keyword, Include, Sort)
+    zoznam = []
+    try:
+        html_file = urllib2.urlopen(page)
+    except Exception:
+        raise Exception("Connection error")
+    soup = ""
+    soup = BeautifulSoup(html_file)
+    list_authors = []
+    number_of_cycles = 0
+    pom_link = ""
+    puvenue = ""
+    pubyear = ""
+    snippet = ""
+    citations = ""
+    pubabstract = ""
+    results = ""
+    pom_list = []
+    pom_string = ""
+    name_of_pub = ""
+    pom_string = unicode(pom_string)
+    link_cit = ""
+    link_lib = ""
+    base_link = ""
+    while (True):
+        list_authors = []
+        results = soup.findAll('div', attrs={'class': 'result'})
+        for i in range(0, len(results)):
+            number_of_cycles = number_of_cycles + 1
+        for i in range(0, number_of_cycles):
+            moje = BeautifulSoup(str(results[i]))
+        #parsovanie nazvu knihy
+            name_of_pub = moje.find('a', attrs={'class': 'doc_details'})
+            if (not name_of_pub):
+                list_authors.append("0")
+            else:
 				
 				
 				pom_list.append(name_of_pub.contents)
@@ -126,7 +107,7 @@ def basicSearch(keyword,Include,Sort):
 				pom_string=""
 
 			#parsovanie autora
-			authors= moje.find('span', attrs={'class' : 'authors'})
+            authors= moje.find('span', attrs={'class' : 'authors'})
 			if (not authors):
 				list_authors.append("0")
 			else:
@@ -322,7 +303,7 @@ def basicSearch(keyword,Include,Sort):
 		#koniec prehladavanie hmtl suboru
 		#snazim sa najst odkaz na dalsiu stranku
 		
-		pager=soup.find('div',attrs={'id' : 'pager'})
+        pager=soup.find('div',attrs={'id' : 'pager'})
 		#pokial som nenasiel ziadny koncim
 		if (len(pager) <2):
 			break
@@ -348,7 +329,7 @@ def basicSearch(keyword,Include,Sort):
 			soup=BeautifulSoup(html_file)
 	
 	#koniec parsovania funkcii
-	return result_dic
+    return result_dic
 	
 
 
@@ -378,6 +359,8 @@ def basicSearch(keyword,Include,Sort):
 		@return: Slovnik pricom kazda polozka odpoveda jednemu
 		vysledku vyhladavania so vsetkymi informaciami o nej
 """
+
+
 def extendedSearch(Text,Title,AutorAffi,PublicVenue,Keywords,Abstract,Year,
 YearArg,MinCitations,IncludeCitation,SortBy):
 	text_arg=0
