@@ -17,7 +17,7 @@ class TestSequenceFunctions(unittest.TestCase):
             slovnik = basicSearch("windows", False, 6)
         except:
             raised = True
-        self.assertFalse(raised, 'Exception raised')
+        self.assertTrue(raised, 'Exception raised')
 
     # test should raise ValueError exception
     def test_exception2(self):
@@ -27,7 +27,7 @@ class TestSequenceFunctions(unittest.TestCase):
             slovnik = basicSearch("windows", "Cau", 3)
         except:
             raised = True
-        self.assertFalse(raised, 'Exception raised')
+        self.assertTrue(raised, 'Exception raised')
 
     # test searching phrase windows without citations sort Relevance
     def test_searching1(self):
