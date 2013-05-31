@@ -6,7 +6,7 @@ setup(
     author='Martin Maga',
     author_email='xmagam00@stud.fit.vutbr.cz',
     packages=['citeseerx'],
-    scripts=['bin/API_PEP8.py'],
+    scripts=['API_PEP8.py'],
     url='http://pypi.python.org/pypi/Citeseerx/',
     license='LICENSE.txt',
     description='Useful scripts',

@@ -6,7 +6,7 @@ Implementuje zakladne vyhladavanie pomocou tejto sluzby
 Modul obsahuje 2 vyhladavacie funkcie: basicSearch a extendedSearch
 """
 
-import bs4
+from bs4 import BeautifulSoup
 import sys
 import urllib2
 import re
@@ -33,7 +33,7 @@ import time
 
 def basicSearch(keyword, Include, Sort):
     result_dic = dict()
-    dic_index = 0
+    dic_index = 1
     author_parse = ""
     title_parse = ""
     date_parse = ""
@@ -54,7 +54,7 @@ def basicSearch(keyword, Include, Sort):
     keyword = keyword.replace(" ", "+")
     pocet = 0
     page = sendUrlCiteSeerX_BASIC(keyword, Include, Sort)
-    
+
     zoznam = []
     try:
         html_file = urllib2.urlopen(page)
@@ -78,7 +78,9 @@ def basicSearch(keyword, Include, Sort):
     link_cit = ""
     link_lib = ""
     base_link = ""
+
     while (True):
+
         list_authors = []
         results = soup.findAll('div', attrs={'class': 'result'})
         for i in range(0, len(results)):
@@ -90,18 +92,22 @@ def basicSearch(keyword, Include, Sort):
             if (not name_of_pub):
                 list_authors.append("0")
             else:
+                pom_string = ""
+                pom_string2 = ""
 
-                pom_list.append(name_of_pub.contents)
-
+                pom_list = name_of_pub.contents
+                # print pom_list
                 for p in range(0, len(pom_list)):
 
                     pom_string = pom_string + unicode(pom_list[p])
+
                 pom_string = pom_string.replace("<em>", "")
                 pom_string = pom_string.replace("</em>", "")
                 pom_string = pom_string.replace("\n", "")
                 pom_string = pom_string.replace("...", "")
                 pom_string = pom_string.replace("\t", "")
                 pom_string = pom_string.strip()
+
                 pom_string = re.sub(r'\s+', ' ', pom_string)
                 list_authors.append(unicode(pom_string))
 
@@ -114,11 +120,13 @@ def basicSearch(keyword, Include, Sort):
             else:
 
                 pom_list = []
-                pom_list.append(authors.contents)
+                pom_string = ""
+                pom_list = (authors.contents)
 
                 for p in range(0, len(pom_list)):
 
                     pom_string = pom_string + unicode(pom_list[p])
+
                 pom_string = pom_string.replace("<em>", "")
                 pom_string = pom_string.replace("</em>", "")
                 pom_string = pom_string.replace("\n", "")
@@ -132,11 +140,12 @@ def basicSearch(keyword, Include, Sort):
 
             # parsovanie nazvu publikacie
             pubvenue = moje.find('span', attrs={'class': 'pubvenue'})
+
             if (not pubvenue):
                 list_authors.append("0")
             else:
                 pom_list = []
-                pom_list.append(pubvenue.contents)
+                pom_list = (pubvenue.contents)
 
                 for p in range(0, len(pom_list)):
 
@@ -156,11 +165,12 @@ def basicSearch(keyword, Include, Sort):
             # parsovanie roku publikacie
 
             pubyear = moje.find('span', attrs={'class': 'pubyear'})
+
             if (not pubyear):
                 list_authors.append("0")
             else:
                 pom_list = []
-                pom_list.append(pubyear.contents)
+                pom_list = (pubyear.contents)
 
                 for p in range(0, len(pom_list)):
                     pom_string = pom_string + unicode(pom_list[p])
@@ -184,7 +194,7 @@ def basicSearch(keyword, Include, Sort):
                 list_authors.append("0")
             else:
                 pom_list = []
-                pom_list.append(snippet.contents)
+                pom_list = snippet.contents
                 # print pom_list
 
                 for p in range(0, len(pom_list)):
@@ -205,11 +215,12 @@ def basicSearch(keyword, Include, Sort):
             # parsovanie citacii
 
             citations = moje.find('span', attrs={'class': 'citations'})
+
             if (not citations):
                 list_authors.append("0")
             else:
                 pom_list = []
-                pom_list.append(citations.contents)
+                pom_list = (citations.contents)
 
                 for p in range(0, len(pom_list)):
                     pom_string = pom_string + unicode(pom_list[p])
@@ -226,11 +237,12 @@ def basicSearch(keyword, Include, Sort):
 
             pubabstract = moje.find('span', attrs={
                                     'class': 'pubabstract'})
+
             if (not pubabstract):
                 list_authors.append("0")
             else:
                 pom_list = []
-                pom_list.append(pubabstract.contents)
+                pom_list = (pubabstract.contents)
 
                 for p in range(0, len(pom_list)):
                     pom_string = pom_string + unicode(pom_list[p])
@@ -245,6 +257,7 @@ def basicSearch(keyword, Include, Sort):
 
             # parsovanie odkazu do kniznice
             link_lib = moje.find('a', attrs={'class': 'doc_details'})
+
             if (not link_lib):
                 list_authors.append("0")
             else:
@@ -255,6 +268,7 @@ def basicSearch(keyword, Include, Sort):
 
             # parsovanie odkazu na citacie
             link_cit = moje.find('a', attrs={'class': 'citation'})
+
             if (not link_cit):
                 list_authors.append("0")
             else:
@@ -265,7 +279,9 @@ def basicSearch(keyword, Include, Sort):
                 list_authors.append(unicode(pom_link))
                 # parsovanie poctu citacii na dielos
             if (Include is True):
+
                 citations = moje.find('a', attrs={'class': 'citation'})
+
                 if (not citations):
                     list_authors.append("0")
                 else:
@@ -293,34 +309,36 @@ def basicSearch(keyword, Include, Sort):
 
             # vlozenie do slovnika
             result_dic[dic_index] = list_authors
+            list_authors = []
 
             dic_index = dic_index + 1
             # koniec prehladavanie hmtl suboru
             # snazim sa najst odkaz na dalsiu stranku
 
-            pager = soup.find('div', attrs={'id': 'pager'})
+        pager = soup.find('div', attrs={'id': 'pager'})
+
                 # pokial som nenasiel ziadny koncim
-            if (len(pager) < 2):
-                break
-            # inak prejdem na dalsiu stranku
-            else:
+        if (len(pager) < 2):
+            break
+        # inak prejdem na dalsiu stranku
+        else:
 
-                next_url = soup.find('div', attrs={'id': 'pager'})
-                pom_list = []
-                author_list = []
-                spom_string = ""
+            next_url = soup.find('div', attrs={'id': 'pager'})
+            pom_list = []
+            author_list = []
+            spom_string = ""
 
-                base_url = "http://citeseerx.ist.psu.edu"
+            base_url = "http://citeseerx.ist.psu.edu"
+
+            pom_string = next_url.contents[1].get('href')
+
+            base_url = base_url + pom_string
+
+            try:
                 html_file = urllib2.urlopen(base_url)
-
-                pom_string = next_url.contents[1].get('href')
-
-                base_url = base_url + pom_string
-                try:
-                    html_file = urllib2.urlopen(base_url)
-                except Exception:
-                    raise Exception("Connection error")
-                soup = BeautifulSoup(html_file)
+            except Exception:
+                raise Exception("Connection error")
+            soup = BeautifulSoup(html_file)
 
         # koniec parsovania funkcii
     return result_dic
@@ -354,7 +372,7 @@ def basicSearch(keyword, Include, Sort):
 """
 
 
-def extendedSearch(Text, Title,Author, AutorAffi, PublicVenue, Keywords,
+def extendedSearch(Text, Title, Author, AutorAffi, PublicVenue, Keywords,
                    Abstract, Year,
                    YearArg, MinCitations, IncludeCitation, SortBy):
     text_arg = 0
@@ -368,19 +386,15 @@ def extendedSearch(Text, Title,Author, AutorAffi, PublicVenue, Keywords,
     citations_arg = 0
     sortbyt_arg = 0
 
-  
     html_file = ""
-    
 
-    html_file = sendUrlCiteSeerX_EXTENDED(
-        Text, Title,Author, AutorAffi, PublicVenue, Keywords,
-                   Abstract, Year,
-                   YearArg, MinCitations, IncludeCitation, SortBy)
-    
-    print html_file
-    sys.exit(0)
+    page = sendUrlCiteSeerX_EXTENDED(
+        Text, Title, Author, AutorAffi, PublicVenue, Keywords,
+        Abstract, Year,
+        YearArg, MinCitations, IncludeCitation, SortBy)
+
     result_dic = dict()
-    dic_index = 0
+    dic_index = 1
     author_parse = ""
     title_parse = ""
     date_parse = ""
@@ -395,13 +409,12 @@ def extendedSearch(Text, Title,Author, AutorAffi, PublicVenue, Keywords,
     html_file = ""
     pager = ""
     authors = ""
-    page = ""
-    keyword = keyword.strip()
-    keyword = re.sub(' +', ' ', keyword)
-    keyword = keyword.replace(" ", "+")
 
-    
-   
+    if (type(Keywords) is not bool):
+        Keywords = Keywords.strip()
+        Keywords = re.sub(' +', ' ', Keywords)
+        Keywords = Keywords.replace(" ", "+")
+
     zoznam = []
     try:
         html_file = urllib2.urlopen(page)
@@ -425,50 +438,53 @@ def extendedSearch(Text, Title,Author, AutorAffi, PublicVenue, Keywords,
     name_of_pub = ""
     pom_string = unicode(pom_string)
     while (True):
+
         list_authors = []
         results = soup.findAll('div', attrs={'class': 'result'})
-
         for i in range(0, len(results)):
             number_of_cycles = number_of_cycles + 1
-
         for i in range(0, number_of_cycles):
             moje = BeautifulSoup(str(results[i]))
-
-            # parsovanie nazvu knihy
-             # a class="remove doc_details"
+        # parsovanie nazvu knihy
             name_of_pub = moje.find('a', attrs={'class': 'doc_details'})
-
             if (not name_of_pub):
                 list_authors.append("0")
             else:
+                pom_string = ""
+                pom_string2 = ""
 
-                pom_list.append(name_of_pub.contents)
+                pom_list = name_of_pub.contents
+                # print pom_list
+                for p in range(0, len(pom_list)):
 
-                for p in range(0, len(pom_list[i])):
+                    pom_string = pom_string + unicode(pom_list[p])
 
-                    pom_string = pom_string + unicode(pom_list[i][p])
                 pom_string = pom_string.replace("<em>", "")
                 pom_string = pom_string.replace("</em>", "")
                 pom_string = pom_string.replace("\n", "")
                 pom_string = pom_string.replace("...", "")
                 pom_string = pom_string.replace("\t", "")
                 pom_string = pom_string.strip()
+
                 pom_string = re.sub(r'\s+', ' ', pom_string)
                 list_authors.append(unicode(pom_string))
 
                 pom_string = ""
 
-            # parsovanie autora
+        # parsovanie autora
             authors = moje.find('span', attrs={'class': 'authors'})
             if (not authors):
                 list_authors.append("0")
             else:
 
-                pom_list.append(authors.contents)
+                pom_list = []
+                pom_string = ""
+                pom_list = (authors.contents)
 
-                for p in range(0, len(pom_list[i])):
+                for p in range(0, len(pom_list)):
 
-                    pom_string = pom_string + unicode(pom_list[i][p])
+                    pom_string = pom_string + unicode(pom_list[p])
+
                 pom_string = pom_string.replace("<em>", "")
                 pom_string = pom_string.replace("</em>", "")
                 pom_string = pom_string.replace("\n", "")
@@ -482,14 +498,16 @@ def extendedSearch(Text, Title,Author, AutorAffi, PublicVenue, Keywords,
 
             # parsovanie nazvu publikacie
             pubvenue = moje.find('span', attrs={'class': 'pubvenue'})
+
             if (not pubvenue):
                 list_authors.append("0")
             else:
-                pom_list.append(pubvenue.contents)
+                pom_list = []
+                pom_list = (pubvenue.contents)
 
-                for p in range(0, len(pom_list[i])):
+                for p in range(0, len(pom_list)):
 
-                    pom_string = pom_string + unicode(pom_list[i][p])
+                    pom_string = pom_string + unicode(pom_list[p])
 
                 pom_string = pom_string.replace("\n", "")
                 pom_string = pom_string.strip()
@@ -505,13 +523,15 @@ def extendedSearch(Text, Title,Author, AutorAffi, PublicVenue, Keywords,
             # parsovanie roku publikacie
 
             pubyear = moje.find('span', attrs={'class': 'pubyear'})
+
             if (not pubyear):
                 list_authors.append("0")
             else:
-                pom_list.append(pubyear.contents)
+                pom_list = []
+                pom_list = (pubyear.contents)
 
-                for p in range(0, len(pom_list[i])):
-                    pom_string = pom_string + unicode(pom_list[i][p])
+                for p in range(0, len(pom_list)):
+                    pom_string = pom_string + unicode(pom_list[p])
                 pom_string = pom_string.strip()
 
                 pom_string = pom_string.replace("<em>", "")
@@ -531,12 +551,12 @@ def extendedSearch(Text, Title,Author, AutorAffi, PublicVenue, Keywords,
             if (not snippet):
                 list_authors.append("0")
             else:
-
-                pom_list.append(snippet.contents)
+                pom_list = []
+                pom_list = snippet.contents
                 # print pom_list
 
-                for p in range(0, len(pom_list[i])):
-                    pom_string = pom_string + unicode(pom_list[i][p])
+                for p in range(0, len(pom_list)):
+                    pom_string = pom_string + unicode(pom_list[p])
             # odstranenie nepotrebnych znacike
                 pom_string = pom_string.replace("\n", "")
                 pom_string = pom_string.strip()
@@ -553,14 +573,15 @@ def extendedSearch(Text, Title,Author, AutorAffi, PublicVenue, Keywords,
             # parsovanie citacii
 
             citations = moje.find('span', attrs={'class': 'citations'})
+
             if (not citations):
                 list_authors.append("0")
             else:
                 pom_list = []
-                pom_list.append(citations.contents)
+                pom_list = (citations.contents)
 
-                for p in range(0, len(pom_list[i])):
-                    pom_string = pom_string + unicode(pom_list[i][p])
+                for p in range(0, len(pom_list)):
+                    pom_string = pom_string + unicode(pom_list[p])
                 pom_string = pom_string.strip()
                 pom_string = pom_string.replace("\n", "")
                 pom_string = pom_string.replace("...", "")
@@ -572,15 +593,17 @@ def extendedSearch(Text, Title,Author, AutorAffi, PublicVenue, Keywords,
 
             # parsovanie abstraktu
 
-            pubabstract = moje.find('span', attrs={'class': 'pubabstract'})
+            pubabstract = moje.find('span', attrs={
+                                    'class': 'pubabstract'})
+
             if (not pubabstract):
                 list_authors.append("0")
             else:
                 pom_list = []
-                pom_list.append(pubabstract.contents)
+                pom_list = (pubabstract.contents)
 
-                for p in range(0, len(pom_list[i])):
-                    pom_string = pom_string + unicode(pom_list[i][p])
+                for p in range(0, len(pom_list)):
+                    pom_string = pom_string + unicode(pom_list[p])
                 pom_string = pom_string.strip()
                 pom_string = pom_string.replace("\n", "")
                 pom_string = pom_string.replace("...", "")
@@ -592,6 +615,7 @@ def extendedSearch(Text, Title,Author, AutorAffi, PublicVenue, Keywords,
 
             # parsovanie odkazu do kniznice
             link_lib = moje.find('a', attrs={'class': 'doc_details'})
+
             if (not link_lib):
                 list_authors.append("0")
             else:
@@ -602,6 +626,7 @@ def extendedSearch(Text, Title,Author, AutorAffi, PublicVenue, Keywords,
 
             # parsovanie odkazu na citacie
             link_cit = moje.find('a', attrs={'class': 'citation'})
+
             if (not link_cit):
                 list_authors.append("0")
             else:
@@ -610,24 +635,23 @@ def extendedSearch(Text, Title,Author, AutorAffi, PublicVenue, Keywords,
                 pom_link = "http://citeseerx.ist.psu.edu"
                 pom_link = pom_link + link_cit
                 list_authors.append(unicode(pom_link))
+                # parsovanie poctu citacii na dielos
+            if (IncludeCitation is True):
 
-            # parsovanie poctu citacii na dielos
-            if (Include is True):
                 citations = moje.find('a', attrs={'class': 'citation'})
+
                 if (not citations):
                     list_authors.append("0")
                 else:
-
+                    pom_list = []
                     pom_list.append(citations.contents)
-
-                    for p in range(0, len(pom_list[i])):
-                        pom_string = pom_string + unicode(pom_list[i][p])
+                    for p in range(0, len(pom_list)):
+                        pom_string = pom_string + unicode(pom_list[p])
                     pom_string = pom_string.strip()
                     pom_string = pom_string.replace("Cited by", "")
                     pom_string = pom_string.replace("(", "")
                     pom_string = pom_string.replace(")", "")
                     pom_string = pom_string.replace("self", "")
-
                     pom_string = pom_string.replace("\n", "")
                     pom_string = pom_string.replace("...", "")
                     pom_string = pom_string.replace("\t", "")
@@ -639,17 +663,19 @@ def extendedSearch(Text, Title,Author, AutorAffi, PublicVenue, Keywords,
                     pom_string = pom_string[:pom_index]
                     list_authors.append((unicode(pom_string)))
 
-                pom_string = ""
+                    pom_string = ""
 
             # vlozenie do slovnika
             result_dic[dic_index] = list_authors
+            list_authors = []
 
             dic_index = dic_index + 1
-        # koniec prehladavanie hmtl suboru
-        # snazim sa najst odkaz na dalsiu stranku
+            # koniec prehladavanie hmtl suboru
+            # snazim sa najst odkaz na dalsiu stranku
 
         pager = soup.find('div', attrs={'id': 'pager'})
-        # pokial som nenasiel ziadny koncim
+
+                # pokial som nenasiel ziadny koncim
         if (len(pager) < 2):
             break
         # inak prejdem na dalsiu stranku
@@ -661,21 +687,18 @@ def extendedSearch(Text, Title,Author, AutorAffi, PublicVenue, Keywords,
             spom_string = ""
 
             base_url = "http://citeseerx.ist.psu.edu"
-            try:
-                html_file = urllib2.urlopen(base_url)
-            except Exception:
-                raise Exception("Connection error")
 
             pom_string = next_url.contents[1].get('href')
 
             base_url = base_url + pom_string
+
             try:
                 html_file = urllib2.urlopen(base_url)
             except Exception:
-                raise RuntimeError("Connection error")
+                raise Exception("Connection error")
             soup = BeautifulSoup(html_file)
 
-    # koniec parsovania funkcii
+        # koniec parsovania funkcii
     return result_dic
 
 
@@ -705,31 +728,36 @@ def extendedSearch(Text, Title,Author, AutorAffi, PublicVenue, Keywords,
 """
 
 
-def sendUrlCiteSeerX_EXTENDED(keywordsPhrase,title_arg, author_name,autoraffi,publicvenue,keywords,abstract,Year,year_arg,min_cit, Citation, Sort):
-                
+def sendUrlCiteSeerX_EXTENDED(keywordsPhrase, title_arg, author_name,
+                              autoraffi, publicvenue, keywords, abstract,
+                              Year, year_arg, min_cit, Citation, Sort):
+
     http_req = "http://citeseerx.ist.psu.edu/search?q="
     counter = 0
-    keywordsPhrase=keywordsPhrase.strip()
-    keywordsPhrase=keywordsPhrase.replace(" ","+")
-    
-    title_arg=title_arg.strip()
-    title_arg=title_arg.replace(" ","+")
-    
-    author_name=author_name.replace(" ","+")
-    author_name=author_name.strip()
-    
-    autoraffi=autoraffi.replace(" ","+")
-    autoraffi=autoraffi.strip()
-    
-    publicvenue=publicvenue.replace(" ","+")
-    publicvenue=publicvenue.strip()
-    
-    keywords=keywords.replace(" ","+")
-    keywords=keywords.strip()
-    
-    abstract=abstract.replace(" ","+")
-    abstract=abstract.strip()
-    
+    keywordsPhrase = keywordsPhrase.strip()
+    keywordsPhrase = keywordsPhrase.replace(" ", "+")
+    if (type(title_arg) is not bool):
+        title_arg = title_arg.strip()
+        title_arg = title_arg.replace(" ", "+")
+
+    if (type(author_name) is not bool):
+        author_name = author_name.replace(" ", "+")
+        author_name = author_name.strip()
+
+    if (type(autoraffi) is not bool):
+        autoraffi = autoraffi.replace(" ", "+")
+        autoraffi = autoraffi.strip()
+
+    if (type(publicvenue) is not bool):
+        publicvenue = publicvenue.replace(" ", "+")
+        publicvenue = publicvenue.strip()
+
+    if (type(keywords) is not bool):
+        keywords = keywords.replace(" ", "+")
+        keywords = keywords.strip()
+    if (type(abstract) is not bool):
+        abstract = abstract.replace(" ", "+")
+        abstract = abstract.strip()
 
     if (Sort > 4):
         raise ValueError("Prohibited value of Sort")
@@ -738,14 +766,15 @@ def sendUrlCiteSeerX_EXTENDED(keywordsPhrase,title_arg, author_name,autoraffi,pu
             if (keywordsPhrase.find("+") != -1):
                 http_req = http_req + "text%3A%28" + keywordsPhrase + "%29"
             else:
-                http_req = http_req + "text%3A" + keywordsPhrase 
+                http_req = http_req + "text%3A" + keywordsPhrase
             counter = counter + 1
-            
+
         if (title_arg is not False):
-            
+
             if (counter != 0):
                 if (title_arg.find("+") != -1):
-                    http_req = http_req + "+AND+" + "title%3A28" + title_arg + "%29"
+                    http_req = http_req + "+AND+" + \
+                        "title%3A28" + title_arg + "%29"
                 else:
                     http_req = http_req + "+AND+" + "title%3A" + title_arg
                 counter = counter + 1
@@ -755,13 +784,14 @@ def sendUrlCiteSeerX_EXTENDED(keywordsPhrase,title_arg, author_name,autoraffi,pu
                 else:
                     http_re = http_req + "title%3A" + title_arg
                 counter = counter + 1
-                
+
         if (abstract is not False):
-            
+
             if (counter != 0):
                 if (abstract.find("+") != -1):
-                    http_req = http_req + "+AND+" + "abstract%3A28" + abstract + "%29"
-                else:     
+                    http_req = http_req + "+AND+" + \
+                        "abstract%3A28" + abstract + "%29"
+                else:
                     http_req = http_req + "+AND+" + "abstract%3A" + abstract
                 counter = counter + 1
             else:
@@ -770,11 +800,12 @@ def sendUrlCiteSeerX_EXTENDED(keywordsPhrase,title_arg, author_name,autoraffi,pu
                 else:
                     http_re = http_req + "abstract%3A" + abstract
                 counter = counter + 1
-        
+
         if (author_name is not False):
             if (counter != 0):
                 if (author_name.find("+") != -1):
-                    http_req = http_req + "+AND+" + "author%3A28" + author_name + "%29"
+                    http_req = http_req + "+AND+" + \
+                        "author%3A28" + author_name + "%29"
                 else:
                     http_req = http_req + "+AND+" + "author%3A" + author_name
                 counter = counter + 1
@@ -787,8 +818,9 @@ def sendUrlCiteSeerX_EXTENDED(keywordsPhrase,title_arg, author_name,autoraffi,pu
         if (autoraffi is not False):
             if (counter != 0):
                 if (autoraffi.find("+") != -1):
-                    http_req = http_req + "+AND+" + "affil%3A28" + autoraffi + "%29"
-                else:   
+                    http_req = http_req + "+AND+" + \
+                        "affil%3A28" + autoraffi + "%29"
+                else:
                     http_req = http_req + "+AND+" + "affil%3A" + autoraffi
                 counter = counter + 1
             else:
@@ -797,13 +829,12 @@ def sendUrlCiteSeerX_EXTENDED(keywordsPhrase,title_arg, author_name,autoraffi,pu
                 else:
                     http_re = http_req + "affil%3A" + autoraffi
                 counter = counter + 1
-            
-            
-        
+
         if (publicvenue is not False):
             if (counter != 0):
                 if (publicvenue.find("+") != -1):
-                    http_req = http_req + "+AND+" + "venue%3A28" + publicvenue + "%29"
+                    http_req = http_req + "+AND+" + \
+                        "venue%3A28" + publicvenue + "%29"
                 else:
                     http_req = http_req + "+AND+" + "venue%3A" + publicvenue
                 counter = counter + 1
@@ -813,12 +844,11 @@ def sendUrlCiteSeerX_EXTENDED(keywordsPhrase,title_arg, author_name,autoraffi,pu
                 else:
                     http_re = http_req + "venue%3A" + publicvenue
                 counter = counter + 1
-                
         if (keywords is not False):
-            
             if (counter != 0):
                 if (keywords.find("+") != -1):
-                    http_req = http_req + "+AND+" + "keyword%3A28" + keywords + "%29"
+                    http_req = http_req + "+AND+" + "keyword%3A28" + \
+                    keywords + "%29"
                 else:
                     http_req = http_req + "+AND+" + "keyword%3A" + keywords
                 counter = counter + 1
@@ -828,53 +858,54 @@ def sendUrlCiteSeerX_EXTENDED(keywordsPhrase,title_arg, author_name,autoraffi,pu
                 else:
                     http_re = http_req + "keyword%3A" + keywords
                 counter = counter + 1
-                
-       
         if (min_cit is not False):
             if (counter != 0):
-                http_req = http_req + "+AND+" + "ncites%3A%5B" + str(min_cit) + "+TO+15000%5D"
+                http_req = http_req + "+AND+" + "ncites%3A%5B" + \
+                str(min_cit) + "+TO+15000%5D"
                 counter = counter + 1
             else:
-                http_re = http_req + "ncites%3A%5B" + str(min_cit)+ "+TO+15000%5D"
+                http_re = http_req + "ncites%3A%5B" + str(min_cit) + \
+                "+TO+15000%5D"
                 counter = counter + 1
-        
+
         if (Year is not False):
             if (counter != 0):
-                
-                
                 if (year_arg[0] >= 1900 and year_arg[1] == 0):
-                    
-                    http_req = http_req + "+AND+" + "year%3A%5B" + str(year_arg[0]) + "+TO+" + "2014" + "%5D"
+
+                    http_req = http_req + "+AND+" + "year%3A%5B" + \
+                    str(year_arg[0]) + "+TO+" + "2014" + "%5D"
                     counter = counter + 1
                 else:
-                    
-                    http_req = http_req + "+AND+" + "year%3A%5B" + str(year_arg[0]) + "+TO+" + str(year_arg[1]) + "%5D"
-                    
+
+                    http_req = http_req + "+AND+" + "year%3A%5B" + \
+                    str(year_arg[0]) + "+TO+" + str(year_arg[1]) + "%5D"
+
                     counter = counter + 1
             else:
                 if (yearArg[0] >= 1900 and yearArg[1] == 0):
-                    http_req = http_req + "+AND+" + "year%3A%5B" + str(year_arg[0]) + "+TO+" + "2014" + "%5D"
+                    http_req = http_req + "+AND+" + "year%3A%5B" + \
+                    str(year_arg[0]) + "+TO+" + "2014" + "%5D"
                     counter = counter + 1
                 else:
-                    http_req = http_req + "+AND+" + "year%3A%5B" + str(year_arg[0]) + "+TO+" + str(year_arg[1]) + "%5D"
+                    http_req = http_req + "+AND+" + "year%3A%5B" + \
+                    str(year_arg[0]) + "+TO+" + str(year_arg[1]) + "%5D"
                     counter = counter + 1
-      
+
     except Exception:
         raise ValueError("Bad values")
-       
+
     sort_list_no_cit = ['&t=doc', '&t=doc&sort=cite',
                         '&t=doc&sort=dates', '&t=doc&sort=ascdate',
                         '&t=doc&sort=recent']
     sort_list_cit = ['&sort=rlv&ic=1&t=doc', '&sort=cite&ic=1&t=doc',
                      '&sort=date&ic=1&t=doc', '&sort=ascdate&t=doc',
                      '&sort=recent&ic=1&t=doc']
-    print Citation
+
     if (Citation is False):
-        http_req = http_req  + sort_list_no_cit[Sort]
+        http_req = http_req + sort_list_no_cit[Sort]
     else:
         print "som tu"
-        http_req = http_req  + sort_list_cit[Sort]
-
+        http_req = http_req + sort_list_cit[Sort]
     return http_req
 
 """
@@ -915,13 +946,10 @@ def sendUrlCiteSeerX_BASIC(keywordsPhrase, Citation, Sort):
                      '&ic=1&t=doc&sort=date',
                      '&t=doc&sort=ascdate', '&ic=1&t=doc&sort=recent']
     if (Citation is False):
-        http_req = "http://citeseerx.ist.psu.edu/search?q=" + keywordsPhrase + "&submit=Search" + sort_list_no_cit[Sort]
+        http_req = "http://citeseerx.ist.psu.edu/search?q=" + keywordsPhrase + \
+        "&submit=Search" + sort_list_no_cit[Sort]
     else:
-        http_req = "http://citeseerx.ist.psu.edu/search?q=" + keywordsPhrase + "&submit=Search" + sort_list_cit[Sort]
+        http_req = "http://citeseerx.ist.psu.edu/search?q=" + keywordsPhrase + \
+        "&submit=Search" + sort_list_cit[Sort]
 
     return http_req
-
-vysledok = dict()
-vysledok = extendedSearch("nieco ahoj", "Cau","bejbe" , "Moje","Mnau", "Mnau","Mnau", True, [1900,2000], 600, True, 2)
-
-print vysledok
