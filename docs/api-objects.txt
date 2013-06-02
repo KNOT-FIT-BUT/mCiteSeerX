@@ -1,7 +1,7 @@
-API_PEP8	API_PEP8-module.html
-API_PEP8.extendedSearch	API_PEP8-module.html#extendedSearch
-API_PEP8.basicSearch	API_PEP8-module.html#basicSearch
-API_PEP8.__package__	API_PEP8-module.html#__package__
-API_PEP8.sendUrlCiteSeerX_EXTENDED	API_PEP8-module.html#sendUrlCiteSeerX_EXTENDED
-API_PEP8.sendUrlCiteSeerX_BASIC	API_PEP8-module.html#sendUrlCiteSeerX_BASIC
-API_PEP8.__strip_one_space	API_PEP8-module.html#__strip_one_space
+citeseerx	citeseerx-module.html
+citeseerx.extendedSearch	citeseerx-module.html#extendedSearch
+citeseerx.basicSearch	citeseerx-module.html#basicSearch
+citeseerx.__package__	citeseerx-module.html#__package__
+citeseerx.sendUrlCiteSeerX_EXTENDED	citeseerx-module.html#sendUrlCiteSeerX_EXTENDED
+citeseerx.sendUrlCiteSeerX_BASIC	citeseerx-module.html#sendUrlCiteSeerX_BASIC
+citeseerx.__strip_one_space	citeseerx-module.html#__strip_one_space

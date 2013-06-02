@@ -5,13 +5,15 @@ MANIFEST.in
 README.md
 setup.py
 bin/citeseerx.py
-citeseerx/__init__.py
+citeseerx/__init.py
 citeseerx/citeseerx.py
 citeseerx/test/UnitTest.py
 citeseerx/test/__init__.py
-docs/API_PEP8-module.html
-docs/API_PEP8-pysrc.html
 docs/api-objects.txt
+docs/citeseerx-module.html
+docs/citeseerx-pysrc.html
+docs/citeseerx.citeseerx-module.html
+docs/citeseerx.citeseerx-pysrc.html
 docs/crarr.png
 docs/epydoc.css
 docs/epydoc.js
@@ -21,6 +23,7 @@ docs/identifier-index.html
 docs/index.html
 docs/module-tree.html
 docs/redirect.html
-docs/toc-API_PEP8-module.html
+docs/toc-citeseerx-module.html
+docs/toc-citeseerx.citeseerx-module.html
 docs/toc-everything.html
 docs/toc.html
