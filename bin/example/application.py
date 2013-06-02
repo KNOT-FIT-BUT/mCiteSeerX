@@ -44,7 +44,7 @@ parser.add_option("--title", dest="title",
                   type="string", metavar="TITLE")
 
 parser.add_option("--author", dest="author",
-                  help="Include autor in extend search CiteSeerX/GoogleScholar",
+                  help="Include autor in extend search CiteSeerX|GoogleScholar",
                   type="string", metavar="Name")
 
 parser.add_option("--authoraffi", dest="authoraffi",
@@ -52,7 +52,7 @@ parser.add_option("--authoraffi", dest="authoraffi",
                   type="string", metavar="AFFI")
 
 parser.add_option("--publicvenue", dest="publicvenue",
-                  help="Include public venue in extend search CiteSeerX/GoogleScholar",
+                  help="Include public venue in extend search CiteSeerX|GoogleScholar",
                   type="string", metavar="VENUE")
 
 parser.add_option("--keywords", dest="keywords",
@@ -68,11 +68,11 @@ parser.add_option("--mincitations", dest="mincitations",
                   type="int", metavar="NUM")
 
 parser.add_option("--startyear", dest="startyear",
-                  help="Include results from startyear in extend search CiteSeerX/StartYear",
+                  help="Include results from startyear in extend search CiteSeerX|StartYear",
                   type="int", metavar="YEAR")
 
 parser.add_option("--endyear", dest="endyear",
-                  help="Include results from endyear in extend search CiteSeerX/GoogleScholar",
+                  help="Include results from endyear in extend search CiteSeerX|GoogleScholar",
                   type="int", metavar="YEAR")
 
 parser.add_option("--withcorrectphrase", dest="withcorrectphrase",
@@ -88,8 +88,8 @@ parser.add_option("--leastoneword", dest="leastoneword",
                   type="string", metavar="PHRASE")
 
 parser.add_option("--occurence", dest="occurence",
-                  help="Search in occurence=title/article in extend search GoogleScholar",
-                  type="string", metavar="PHRASE")
+                  help="Search in occurence in title = 1| in hole article=2 in extend search GoogleScholar",
+                  type="string", metavar="1|2")
 
 parser.add_option("--format", dest="format",
                   help="format results=NEWLINE|TAB", type="string",
